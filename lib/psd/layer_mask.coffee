@@ -1,7 +1,7 @@
 _ = require 'lodash'
 Util = require './util.coffee'
 Layer = require './layer.coffee'
-AdditionalInfo = require './additional_layer_info/info.coffee'
+AdditionalInfo = require './additional_layer_info/add_info.coffee'
 
 # The layer mask is the overarching data structure that describes both
 # the layers/groups in the PSD document, and the global mask.
@@ -18,6 +18,7 @@ module.exports = class LayerMask
     @layers = []
     @mergedAlpha = false
     @globalMask = null
+    @addInfos = {}
 
   skip: -> @file.seek @file.readInt(), true
 
@@ -29,7 +30,7 @@ module.exports = class LayerMask
 
     @parseLayers()
     @parseGlobalMask()
-    @parseAdditionalLayerInfo()
+    @parseAdditionalLayerInfo(finish - @file.tell())
 
     # The layers are stored in the reverse order that we would like them. In other
     # words, they're stored bottom to top and we want them top to bottom.
@@ -74,7 +75,6 @@ module.exports = class LayerMask
 
     @file.seek maskEnd
 
-  parseAdditionalLayerInfo: ->
-    console.log 'try to parse additional layer info'
-    AdditionalInfo.parse @file
+  parseAdditionalLayerInfo: (remaining_size) ->
+    AdditionalInfo.parse @file, @addInfos, remaining_size
     return
