@@ -52,7 +52,10 @@ module.exports = class ChannelImage extends Image
 
       # If we're working with a mask channel, then the mask can define it's own dimensions separate
       # from the image dimensions. We grab these dimensions from the layer's mask data.
-      if chan.id < -1
+      if chan.id <= -3
+        @_width =  @layer.mask.realUserMask.width
+        @_height =  @layer.mask.realUserMask.height
+      else if chan.id < -1
         @_width = @layer.mask.width
         @_height = @layer.mask.height
       else

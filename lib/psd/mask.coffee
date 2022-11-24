@@ -7,6 +7,7 @@ module.exports = class Mask
     @right = 0
     @bottom = 0
     @left = 0
+    @realUserMask = null
 
   parse: ->
     # If there is no mask, then this section will have a size of zero
@@ -22,6 +23,9 @@ module.exports = class Mask
     @bottom = @file.readInt()
     @right = @file.readInt()
 
+    @defaultColor = @file.readByte()
+    @flags = @file.readByte()
+
     # We can then easily derive the dimensions from the box coordinates.
     @width = @right - @left
     @height = @bottom - @top
@@ -31,8 +35,19 @@ module.exports = class Mask
     @disabled = (@flags & (0x01 << 1)) > 0
     @invert = (@flags & (0x01 << 2)) > 0
 
-    @defaultColor = @file.readByte()
-    @flags = @file.readByte()
+    if (@flags & 0x0f) > 0
+      @file.seek 1, true
+    if (@size == 20) 
+      @file.seek 2, true
+
+    # real user mask
+    @realUserMask = {}
+    @realUserMask.flag = @file.readByte()
+    @realUserMask.color = @file.readByte()
+    @realUserMask.top = @file.readInt()
+    @realUserMask.left = @file.readInt()
+    @realUserMask.height = @file.readInt() - @realUserMask.top
+    @realUserMask.width = @file.readInt() - @realUserMask.left
 
     @file.seek maskEnd
     return @
@@ -50,3 +65,4 @@ module.exports = class Mask
     relative: @relative
     disabled: @disabled
     invert: @invert
+    realUserMask: @realUserMask
