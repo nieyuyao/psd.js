@@ -11,6 +11,7 @@ module.exports = class Image extends Module
   # Here we include all of our important mixins.
   @includes ImageFormat.RAW
   @includes ImageFormat.RLE
+  @includes ImageFormat.ZIP
   @includes ImageMode.Greyscale
   @includes ImageMode.RGB
   @includes ImageMode.CMYK
@@ -65,6 +66,7 @@ module.exports = class Image extends Module
     @length = switch @depth()
       when 1 then (@width() + 7) / 8 * @height()
       when 16 then @width() * @height() * 2
+      when 32 then @width() * @height() * 4
       else @width() * @height()
 
     @channelLength = @length

@@ -44,11 +44,12 @@ module.exports = class ChannelImage extends Image
   parse: ->
     @chanPos = 0
     for chan in @channelsInfo
+      @chan = chan
+
       if chan.length <= 0
         @parseCompression()
         continue
 
-      @chan = chan
 
       # If we're working with a mask channel, then the mask can define it's own dimensions separate
       # from the image dimensions. We grab these dimensions from the layer's mask data.
