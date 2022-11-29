@@ -25,7 +25,7 @@
     "rsvp": "~ 3.0.6"
   },
   "scripts": {
-    "test": "mocha test",
+    "test": "mocha",
     "docs": "node_modules/docco-husky/bin/generate lib shims",
     "build": "cake compile-browser",
     "generate-docs": "cake docs:generate",
