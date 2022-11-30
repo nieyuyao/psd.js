@@ -47,5 +47,5 @@ module.exports =
       offset += maskPixels
       for i in [0...realUserMaskPixels]
         val = @channelData[i + offset]
-        @realUserMaskData.set([0, 0, 0, 255], i * 4)
+        @realUserMaskData.set([val, val, val, 255], i * 4)
 

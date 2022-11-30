@@ -10,21 +10,22 @@ module.exports =
     @channelData.set decompressed
     return if @compression == 2
     # with prediction
-    else
-      decoded = @decode_zip_prediction(decompressed)
-      @channelData.set decoded
+    decoded = @decode_zip_prediction(decompressed)
+    @channelData.set decoded
 
-  decode_zip_prediction: (decompressed)->
-    if @depth == 8
+  decode_zip_prediction: (decompressed) ->
+    depth = @depth()
+    if depth == 8
       arr = new Uint8Array(decompressed)
-      delta_decode(arr, @read8, @_width, @_height)
-    else if @depth == 16
+      @delta_decode(arr, @read8, @_width, @_height)
+    else if depth == 16
       arr = new Uint16Array(decompressed)
-      delta_decode(arr, @read16, @_width, @_height)
-    else if @depth == 32
+      @delta_decode(arr, @read16, @_width, @_height)
+    else if depth == 32
       arr = new Uint32Array(decompressed)
-      delta_decode(arr, @read32, @_width, @_height)
-    else throw new Error('Invalid depth. Got #{ depth } .')
+      @delta_decode(arr, @read32, @_width, @_height)
+    else
+      throw new Error('Invalid depth. Got ' + depth  + '.')
 
   read8: (num) -> num
 
