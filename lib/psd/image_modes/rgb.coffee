@@ -42,9 +42,10 @@ module.exports =
       
       # real user mask
       realUserMask = @layer.mask.realUserMask
+      return if !realUserMask
       realUserMaskPixels = realUserMask.width * realUserMask.height
       offset += maskPixels
       for i in [0...realUserMaskPixels]
         val = @channelData[i + offset]
-        @realUserMaskData.set([val], i)
+        @realUserMaskData.set([0, 0, 0, 255], i * 4)
 

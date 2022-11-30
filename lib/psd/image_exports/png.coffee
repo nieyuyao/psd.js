@@ -26,3 +26,18 @@ module.exports =
         .pack()
         .pipe(fs.createWriteStream(output))
         .on 'finish', resolve
+
+  realUserMaskToPng: ->
+    realUserMask = @layer.mask.realUserMask
+    width = if realUserMask then realUserMask.width else 0
+    height = if realUserMask then realUserMask.height else 0
+    png = new PNG(filterType: 4, width: width, height: height)
+    png.data = @realUserMaskData
+    png
+
+  saveRealUserMaskAsPng: (output) ->
+    new RSVP.Promise (resolve, reject) =>
+      @realUserMaskToPng()
+        .pack()
+        .pipe(fs.createWriteStream(output))
+        .on 'finish', resolve

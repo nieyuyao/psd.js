@@ -2,7 +2,7 @@
 # represented by this class. The mask describes which parts of the
 # layer are visible and which are hidden.
 module.exports = class Mask
-  constructor: (@file) ->
+  constructor: (@file, @channelsInfo) ->
     @top = 0
     @right = 0
     @bottom = 0
@@ -35,22 +35,27 @@ module.exports = class Mask
     @disabled = (@flags & (0x01 << 1)) > 0
     @invert = (@flags & (0x01 << 2)) > 0
 
-    if (@flags & 0x0f) > 0
-      @file.seek 1, true
-    if (@size == 20) 
-      @file.seek 2, true
+    if @flags & 0x10
+      @parseRealUserMask()
 
-    # real user mask
+    @file.seek maskEnd
+    return @
+  
+  parseRealUserMask: ->
+    exist = false
+    for chan in @channelsInfo
+      exist = if chan.id == -3 then true else false
+      break if exist
+    return if !exist
     @realUserMask = {}
-    @realUserMask.flag = @file.readByte()
+    # flag
+    @file.seek 1, true
+    # color
     @realUserMask.color = @file.readByte()
     @realUserMask.top = @file.readInt()
     @realUserMask.left = @file.readInt()
     @realUserMask.height = @file.readInt() - @realUserMask.top
     @realUserMask.width = @file.readInt() - @realUserMask.left
-
-    @file.seek maskEnd
-    return @
 
   export: ->
     return {} if @size is 0

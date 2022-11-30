@@ -36,7 +36,7 @@ module.exports = class Image extends Module
     # The resulting array that stores the pixel data, formatted in RGBA format.
     @pixelData = new Uint8Array(@channelLength * 4)
     @maskData =  new Uint8Array(@maskLength * 4)
-    @realUserMaskData = new Uint8Array(@realUserMaskLength)
+    @realUserMaskData = new Uint8Array(@realUserMaskLength * 4)
 
     # This temporarily holds the raw channel data after it's been parsed, but not
     # processed.
@@ -74,9 +74,11 @@ module.exports = class Image extends Module
 
     if @layer and @layer.mask.size
       @maskLength = @layer.mask.width * @layer.mask.height
-      @realUserMaskLength = @layer.mask.realUserMask.width * @layer.mask.realUserMask.height
+      realUserMask =  @layer.mask.realUserMask
+      @realUserMaskLength = if realUserMask then (realUserMask.width * realUserMask.height) else 0
     else
       @maskLength = 0
+      @realUserMaskLength = 0
 
   # Parses the image and formats the image data.
   parse: ->

@@ -7,13 +7,13 @@ outputPath    = path.resolve(__dirname, "output")
 fixturesPath  = path.resolve(__dirname, "fixtures")
 
 describe "exporting from a PSD", ->
-  beforeEach (done) ->
-    fs.mkdir outputPath, done
+  beforeEach () ->
+    fs.mkdirSync outputPath
 
-  afterEach (done) ->
-    rimraf outputPath, done
+  afterEach () ->
+    rimraf.sync outputPath
 
-  it "should export a png", (done) ->
+  it "should export a png", () ->
     psdPath       = path.resolve(__dirname, "../", "examples/images/example.psd")
     filePath      = path.join(outputPath, "out.png")
     expectedPath  = path.join(fixturesPath, "out.png")
@@ -25,6 +25,4 @@ describe "exporting from a PSD", ->
       fs.statSync(filePath).size
       .should
       .eql(fs.statSync(expectedPath).size)
-    .then -> done
-    .catch done()
 
